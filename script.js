@@ -2,14 +2,29 @@ const menuBtn = document.getElementById("menuBtn");
 const menu = document.getElementById("menu");
 
 if (menuBtn && menu) {
-  menuBtn.addEventListener("click", function () {
+  menuBtn.addEventListener("click", function (event) {
+    event.stopPropagation();
     menu.classList.toggle("active");
+
+    const expanded = menu.classList.contains("active");
+    menuBtn.setAttribute("aria-expanded", expanded);
   });
 
   document.querySelectorAll(".menu a").forEach((link) => {
     link.addEventListener("click", () => {
       menu.classList.remove("active");
+      menuBtn.setAttribute("aria-expanded", "false");
     });
+  });
+
+  document.addEventListener("click", function (event) {
+    const clickedInsideMenu = menu.contains(event.target);
+    const clickedMenuBtn = menuBtn.contains(event.target);
+
+    if (!clickedInsideMenu && !clickedMenuBtn) {
+      menu.classList.remove("active");
+      menuBtn.setAttribute("aria-expanded", "false");
+    }
   });
 }
 
